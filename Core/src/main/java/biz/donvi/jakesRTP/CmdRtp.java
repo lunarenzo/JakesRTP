@@ -119,8 +119,8 @@ public class CmdRtp implements TabExecutor {
                         randomTeleporter.logRtpOnCommand, "Rtp-from-command triggered!"
                     );
                     if (rtpProfile.preferSyncTpOnCommand)
-                         rtpAction.teleportSync (player);
-                    else rtpAction.teleportAsync(player);
+                         rtpAction.teleportSync(player);
+                    else rtpAction.teleportFullyAsync(player); // Use fully async to avoid main thread chunk loading
                     // Log in the cooldown list
                     rtpProfile.coolDown.log(player.getName(), System.currentTimeMillis());
                     // Charge the player

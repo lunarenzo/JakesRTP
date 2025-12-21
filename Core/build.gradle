@@ -5,9 +5,15 @@ plugins {
 
 repositories {
     mavenCentral()
-    maven { url 'https://papermc.io/repo/repository/maven-public/' }
+    maven {
+        url 'https://jitpack.io'
+        content { includeGroupByRegex 'com\\.github\\..*' }
+    }
+    maven {
+        url 'https://papermc.io/repo/repository/maven-public/'
+        content { excludeGroupByRegex 'com\\.github\\..*' }
+    }
     maven { url 'https://repo.codemc.io/repository/maven-public/' }
-    maven { url 'https://jitpack.io' }
     maven { url 'https://maven.enginehub.org/repo/' }
     maven { url 'https://repo.mikeprimm.com/'}
 }
@@ -15,9 +21,6 @@ repositories {
 dependencies {
     compileOnly 'org.spigotmc:spigot-api:1.17-R0.1-SNAPSHOT'
     implementation 'io.papermc:paperlib:1.0.6'
-    implementation 'biz.donvi:ArgsChecker:1.0'
-    implementation 'biz.donvi:EvenDistribution:1.1.1'
-    implementation 'biz.donvi:GnuPlotter:1.2'
 //    implementation project(":patch-1-12-2")
     compileOnly 'us.dynmap:dynmap-api:3.1'
     compileOnly 'org.popcraft:chunky-common:1.2.86'
@@ -28,7 +31,6 @@ dependencies {
     compileOnly 'com.github.TechFortress:GriefPrevention:16.17.1'
     compileOnly 'com.sk89q.worldguard:worldguard-bukkit:7.0.5'
     compileOnly 'com.github.WiIIiam278:HuskTowns:1.5.3'
-    compileOnly "com.github.angeschossen:LandsAPI:6.0.2"
 }
 
 processResources {
@@ -39,9 +41,9 @@ processResources {
 }
 
 shadowJar {
+    archiveBaseName.set('JakesRTP')
+    archiveClassifier.set('')
     relocate 'io.papermc', 'biz.donvi.jakesRTP.libs.io.papermc'
-    relocate 'biz.donvi.argsChecker', 'biz.donvi.jakesRTP.libs.biz.donvi.argsChecker'
-    relocate 'biz.donvi.evenDistribution', 'biz.donvi.jakesRTP.libs.biz.donvi.evenDistribution'
 }
 
 artifacts {
@@ -50,7 +52,12 @@ artifacts {
 
 task copyToMainOut(type: Copy) {
     dependsOn(tasks.build)
-    delete file("../build-output-final/").listFiles()
+    doFirst {
+        def outputDir = file("../build-output-final/")
+        if (outputDir.exists()) {
+            delete outputDir.listFiles()
+        }
+    }
     from file("build/libs/Core-${project.version}-all.jar")
     into file("../build-output-final")
     rename 'Core-', 'JakesRTP-v'
@@ -59,7 +66,9 @@ task copyToMainOut(type: Copy) {
 
 task prepareTestServer(type: Copy) {
     dependsOn(tasks.copyToMainOut)
-    delete file("../testServer/plugins/JakesRTP.jar")
+    doFirst {
+        delete file("../testServer/plugins/JakesRTP.jar")
+    }
     from file("../build-output-final/JakesRTP-v${project.version}.jar")
     into file("../testServer/plugins/")
     rename '-.*\\.', '\\.'

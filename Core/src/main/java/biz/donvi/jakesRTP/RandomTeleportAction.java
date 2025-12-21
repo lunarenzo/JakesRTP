@@ -113,6 +113,60 @@ public class RandomTeleportAction {
     }
 
     /**
+     * Teleports a player with location finding performed <b>off the main thread</b>. This prevents synchronous
+     * chunk loading from blocking the server. The location is found asynchronously, then the player is teleported
+     * using Paper's async teleport.
+     * <p>
+     * This is the most performant method and should be preferred when possible.
+     *
+     * @param player The player to teleport.
+     * @return A reference to this object.
+     */
+    public RandomTeleportAction teleportFullyAsync(Player player) {
+        if (used) throw new RandomTeleportActionAlreadyUsedException();
+        else used = true;
+        this.player = player;
+        if (timed) timeStart = System.currentTimeMillis();
+
+        // Schedule location finding on async thread to avoid main thread chunk loading
+        Bukkit.getScheduler().runTaskAsynchronously(JakesRtpPlugin.plugin, () -> {
+            try {
+                landingLoc = randomTeleporter.getRtpLocation(rtpProfile, callFromLoc, takeFromQueue);
+                setupPlaceholders();
+                // Now teleport the player (PaperLib handles the sync part)
+                PaperLib.teleportAsync(player, landingLoc).thenAccept(this::postTeleport);
+            } catch (JrtpBaseException e) {
+                // Send error message on main thread
+                Bukkit.getScheduler().runTask(JakesRtpPlugin.plugin, () ->
+                    player.sendMessage(Messages.NP_UNEXPECTED_EXCEPTION.format(e.getMessage())));
+            }
+        });
+        return this;
+    }
+
+    /**
+     * Sets up placeholder values for commands. Extracted for use in async context.
+     */
+    private void setupPlaceholders() {
+        if (rtpProfile.commandsToRun.length != 0) {
+            placeholders.put("location", locationAsString(landingLoc, 1, false));
+            placeholders.put("world", Objects.requireNonNull(landingLoc.getWorld()).getName());
+            placeholders.put("x", String.valueOf(landingLoc.getBlockX()));
+            placeholders.put("y", String.valueOf(landingLoc.getBlockY()));
+            placeholders.put("z", String.valueOf(landingLoc.getBlockZ()));
+            if (player == null) return;
+            placeholders.put("player", player.getName());
+            placeholders.put("player_display_name", player.getDisplayName());
+            Location playerLoc = player.getLocation();
+            placeholders.put("location_old", locationAsString(playerLoc, 1, false));
+            placeholders.put("world_old", Objects.requireNonNull(playerLoc.getWorld()).getName());
+            placeholders.put("x_old", String.valueOf(playerLoc.getBlockX()));
+            placeholders.put("y_old", String.valueOf(playerLoc.getBlockY()));
+            placeholders.put("z_old", String.valueOf(playerLoc.getBlockZ()));
+        }
+    }
+
+    /**
      * For when you just want a location and don't want to teleport anyone. This essentially allows you to use the
      * <code>randomTeleporter</code> as a super efficient random-safe-location generator.
      *

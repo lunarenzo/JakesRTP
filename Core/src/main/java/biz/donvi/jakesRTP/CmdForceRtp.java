@@ -60,7 +60,7 @@ public class CmdForceRtp extends DynamicArgsMap implements TabExecutor {
         new RandomTeleportAction(
             randomTeleporter, rtpProfile, playerToTp.getLocation(), true, true,
             randomTeleporter.logRtpOnForceCommand, "Rtp-from-force-command triggered!"
-        ).teleportAsync(playerToTp);
+        ).teleportFullyAsync(playerToTp);
     }
 
     private void subForceRtpWithWorld(CommandSender sender, String[] args) throws Exception {
@@ -86,7 +86,7 @@ public class CmdForceRtp extends DynamicArgsMap implements TabExecutor {
             true,
             true,
             randomTeleporter.logRtpOnForceCommand, "Rtp-from-force-command triggered!"
-        ).teleportAsync(playerToTp);
+        ).teleportFullyAsync(playerToTp);
     }
 
     @Override
