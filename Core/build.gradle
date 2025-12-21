@@ -41,6 +41,8 @@ processResources {
 }
 
 shadowJar {
+    archiveBaseName.set('JakesRTP')
+    archiveClassifier.set('')
     relocate 'io.papermc', 'biz.donvi.jakesRTP.libs.io.papermc'
 }
 

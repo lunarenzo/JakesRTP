@@ -34,5 +34,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: JakesRTP
-          path: Core/build/libs/*-all.jar
+          path: Core/build/libs/JakesRTP-*.jar
           if-no-files-found: error
