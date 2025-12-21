@@ -27,49 +27,10 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      # Install biz.donvi dependencies to mavenLocal
-      # These libraries aren't publicly hosted, so we build them from source
-      - name: Clone and build ArgsChecker
-        run: |
-          git clone https://github.com/donvi-bz/ArgsChecker.git /tmp/ArgsChecker || echo "ArgsChecker repo not found"
-          if [ -d "/tmp/ArgsChecker" ]; then
-            cd /tmp/ArgsChecker && chmod +x gradlew 2>/dev/null || true
-            ./gradlew publishToMavenLocal 2>/dev/null || ./gradlew build publishToMavenLocal 2>/dev/null || true
-          fi
-
-      - name: Clone and build EvenDistribution
-        run: |
-          git clone https://github.com/donvi-bz/EvenDistribution.git /tmp/EvenDistribution || echo "EvenDistribution repo not found"
-          if [ -d "/tmp/EvenDistribution" ]; then
-            cd /tmp/EvenDistribution && chmod +x gradlew 2>/dev/null || true
-            ./gradlew publishToMavenLocal 2>/dev/null || ./gradlew build publishToMavenLocal 2>/dev/null || true
-          fi
-
-      - name: Clone and build GnuPlotter
-        run: |
-          git clone https://github.com/donvi-bz/GnuPlotter.git /tmp/GnuPlotter || echo "GnuPlotter repo not found"
-          if [ -d "/tmp/GnuPlotter" ]; then
-            cd /tmp/GnuPlotter && chmod +x gradlew 2>/dev/null || true
-            ./gradlew publishToMavenLocal 2>/dev/null || ./gradlew build publishToMavenLocal 2>/dev/null || true
-          fi
-
       - name: Build with Gradle
         run: ./gradlew build shadowJar
-        continue-on-error: true
-        id: build
-
-      - name: Build failed - dependency issue
-        if: steps.build.outcome == 'failure'
-        run: |
-          echo "::warning::Build failed - likely due to missing biz.donvi dependencies (ArgsChecker, EvenDistribution, GnuPlotter)"
-          echo "These libraries are not publicly hosted. Options:"
-          echo "1. Contact the original author (donvi-bz) to publish them"
-          echo "2. Include pre-built JARs in a libs/ directory"
-          echo "3. Build locally with 'mavenLocal()' after installing dependencies"
-          exit 1
 
       - name: Upload artifact
-        if: steps.build.outcome == 'success'
         uses: actions/upload-artifact@v4
         with:
           name: JakesRTP
