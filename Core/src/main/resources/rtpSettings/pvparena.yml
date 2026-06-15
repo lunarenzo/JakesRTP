@@ -4,7 +4,7 @@ require-explicit-permission: false
 priority: 10
 landing-world: 'pvparena'
 call-from-worlds:
-  - '.*'
+  - 'pvparena'
 distribution: 'pvparena'
 location-checking-profile: b # Top down since it's an end world
 cooldown: 10
