@@ -35,6 +35,7 @@ public class RandomTeleportAction {
     private long     timeEnd;
     private Player   player;
     private Location landingLoc;
+    private Runnable completionCallback;
 
     /**
      * Creates a new RandomTeleporterAction. Creating the action does nothing on its own, when you are ready to use
@@ -166,6 +167,11 @@ public class RandomTeleportAction {
         }
     }
 
+    public RandomTeleportAction onComplete(Runnable callback) {
+        this.completionCallback = callback;
+        return this;
+    }
+
     /**
      * For when you just want a location and don't want to teleport anyone. This essentially allows you to use the
      * <code>randomTeleporter</code> as a super efficient random-safe-location generator.
@@ -268,6 +274,9 @@ public class RandomTeleportAction {
         if (rtpProfile.commandsToRun.length != 0)
             for (String command : rtpProfile.commandsToRun)
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), fillPlaceholders(command, placeholders));
+        if (teleported && completionCallback != null) {
+            completionCallback.run();
+        }
     }
 
     static class RandomTeleportActionAlreadyUsedException extends RuntimeException {}

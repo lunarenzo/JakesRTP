@@ -124,19 +124,40 @@ public class CmdRtp implements TabExecutor {
                         true,
                         randomTeleporter.logRtpOnCommand, "Rtp-from-command triggered!"
                     );
+                    rtpAction.onComplete(() -> {
+                        if (!player.isOnline()) return;
+                        final Location targetLoc = player.getLocation().clone();
+                        final int[] taskId = new int[1];
+                        taskId[0] = scheduler.scheduleSyncRepeatingTask(plugin, new Runnable() {
+                            private int ticksElapsed = 0;
+                            @Override
+                            public void run() {
+                                ticksElapsed += 2;
+                                if (!player.isOnline()) {
+                                    scheduler.cancelTask(taskId[0]);
+                                    return;
+                                }
+                                Location currentLoc = player.getLocation();
+                                if (currentLoc.getX() != targetLoc.getX() ||
+                                    currentLoc.getY() != targetLoc.getY() ||
+                                    currentLoc.getZ() != targetLoc.getZ() ||
+                                    currentLoc.getYaw() != targetLoc.getYaw() ||
+                                    currentLoc.getPitch() != targetLoc.getPitch() ||
+                                    ticksElapsed >= 40) {
+                                    
+                                    player.sendTitle(rtpProfile.warmupTitleSuccess, rtpProfile.warmupSubtitleSuccess, 5, 45, 15);
+                                    for (String soundStr : rtpProfile.warmupSoundsSuccess) {
+                                        playSound(player, soundStr, 1.0f, 1.0f);
+                                    }
+                                    scheduler.cancelTask(taskId[0]);
+                                }
+                            }
+                        }, 0L, 2L);
+                    });
+
                     if (rtpProfile.preferSyncTpOnCommand)
                          rtpAction.teleportSync(player);
                     else rtpAction.teleportFullyAsync(player); // Use fully async to avoid main thread chunk loading
-                    
-                    // Show success title & play sounds (delayed slightly to prevent client cutoff on teleport)
-                    scheduler.runTaskLater(plugin, () -> {
-                        if (player.isOnline()) {
-                            player.sendTitle(rtpProfile.warmupTitleSuccess, rtpProfile.warmupSubtitleSuccess, 5, 45, 15);
-                            for (String soundStr : rtpProfile.warmupSoundsSuccess) {
-                                playSound(player, soundStr, 1.0f, 1.0f);
-                            }
-                        }
-                    }, 5L);
 
                     // Log in the cooldown list
                     rtpProfile.coolDown.log(player.getName(), System.currentTimeMillis());
