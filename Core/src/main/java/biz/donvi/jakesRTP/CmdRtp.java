@@ -6,6 +6,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitScheduler;
 
 import java.util.ArrayList;
@@ -127,32 +128,31 @@ public class CmdRtp implements TabExecutor {
                     rtpAction.onComplete(() -> {
                         if (!player.isOnline()) return;
                         final Location targetLoc = player.getLocation().clone();
-                        final int[] taskId = new int[1];
-                        taskId[0] = scheduler.scheduleSyncRepeatingTask(plugin, new Runnable() {
+                        new BukkitRunnable() {
                             private int ticksElapsed = 0;
                             @Override
                             public void run() {
                                 ticksElapsed += 2;
                                 if (!player.isOnline()) {
-                                    scheduler.cancelTask(taskId[0]);
+                                    cancel();
                                     return;
                                 }
                                 Location currentLoc = player.getLocation();
-                                if (currentLoc.getX() != targetLoc.getX() ||
-                                    currentLoc.getY() != targetLoc.getY() ||
-                                    currentLoc.getZ() != targetLoc.getZ() ||
-                                    currentLoc.getYaw() != targetLoc.getYaw() ||
-                                    currentLoc.getPitch() != targetLoc.getPitch() ||
-                                    ticksElapsed >= 40) {
-                                    
+                                double dx = currentLoc.getX() - targetLoc.getX();
+                                double dy = currentLoc.getY() - targetLoc.getY();
+                                double dz = currentLoc.getZ() - targetLoc.getZ();
+                                float dyaw = currentLoc.getYaw() - targetLoc.getYaw();
+                                float dpitch = currentLoc.getPitch() - targetLoc.getPitch();
+                                boolean moved = (dx * dx + dy * dy + dz * dz > 1e-6) || (dyaw * dyaw + dpitch * dpitch > 1e-6);
+                                if (moved || ticksElapsed >= 40) {
                                     player.sendTitle(rtpProfile.warmupTitleSuccess, rtpProfile.warmupSubtitleSuccess, 5, 45, 15);
                                     for (String soundStr : rtpProfile.warmupSoundsSuccess) {
                                         playSound(player, soundStr, 1.0f, 1.0f);
                                     }
-                                    scheduler.cancelTask(taskId[0]);
+                                    cancel();
                                 }
                             }
-                        }, 0L, 2L);
+                        }.runTaskTimer(plugin, 0L, 2L);
                     });
 
                     if (rtpProfile.preferSyncTpOnCommand)
