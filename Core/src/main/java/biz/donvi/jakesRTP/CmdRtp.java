@@ -97,10 +97,10 @@ public class CmdRtp implements TabExecutor {
             private int timeDifInSeconds() { return (int) ((System.currentTimeMillis() - startTime) / 1000); }
 
             private void countDown() {
-                player.sendMessage(Messages.
-                    WARMUP_TELEPORTING_IN_X.format(
-                    rtpProfile.warmup - timeDifInSeconds()
-                ));
+                int timeLeft = rtpProfile.warmup - timeDifInSeconds();
+                player.sendMessage(Messages.WARMUP_TELEPORTING_IN_X.format(timeLeft));
+                player.sendTitle("§6§lTeleporting...", "§eIn §f" + timeLeft + "§e seconds...", 0, 25, 5);
+                player.playSound(player.getLocation(), org.bukkit.Sound.BLOCK_NOTE_BLOCK_PLING, 0.6f, 0.8f + (float) (rtpProfile.warmup - timeLeft) * 0.15f);
             }
 
             private void teleport() {
@@ -121,6 +121,12 @@ public class CmdRtp implements TabExecutor {
                     if (rtpProfile.preferSyncTpOnCommand)
                          rtpAction.teleportSync(player);
                     else rtpAction.teleportFullyAsync(player); // Use fully async to avoid main thread chunk loading
+                    
+                    // Show success title & play sounds
+                    player.sendTitle("§a§lTeleported!", "§7Safe landing location found", 5, 45, 15);
+                    player.playSound(player.getLocation(), org.bukkit.Sound.ENTITY_ENDERMAN_TELEPORT, 1.0f, 1.0f);
+                    player.playSound(player.getLocation(), org.bukkit.Sound.ENTITY_PLAYER_LEVELUP, 0.8f, 1.3f);
+
                     // Log in the cooldown list
                     rtpProfile.coolDown.log(player.getName(), System.currentTimeMillis());
                     // Charge the player
@@ -142,6 +148,9 @@ public class CmdRtp implements TabExecutor {
 
             private void cancel() {
                 player.sendMessage(Messages.WARMUP_CANCEL_BECAUSE_MOVE.format());
+                player.sendTitle("§c§lCancelled", "§7RTP cancelled because you moved!", 5, 40, 15);
+                player.playSound(player.getLocation(), org.bukkit.Sound.BLOCK_FIRE_EXTINGUISH, 1.0f, 1.0f);
+                player.playSound(player.getLocation(), org.bukkit.Sound.ENTITY_ITEM_BREAK, 0.8f, 0.8f);
                 cancelTask();
             }
 
