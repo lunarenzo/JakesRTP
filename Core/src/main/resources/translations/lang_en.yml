@@ -74,3 +74,5 @@ readable-time-word-days:    '{0} days, '
 readable-time-word-hours:   '{0} hours, '
 readable-time-word-minutes: '{0} minutes, '
 readable-time-word-seconds: '{0} seconds.'
+# For general command usage / error help
+rtp-usage: '&cUsage: /rtp [settingsName]'

@@ -30,7 +30,8 @@ public enum Messages {
     READABLE_TIME_WORD_DAYS("readable-time-word-days"),
     READABLE_TIME_WORD_HOURS("readable-time-word-hours"),
     READABLE_TIME_WORD_MINUTES("readable-time-word-minutes"),
-    READABLE_TIME_WORD_SECONDS("readable-time-word-seconds");
+    READABLE_TIME_WORD_SECONDS("readable-time-word-seconds"),
+    RTP_USAGE("rtp-usage");
 
     /* ================================================== *\
                             Static
