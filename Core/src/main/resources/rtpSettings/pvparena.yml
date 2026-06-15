@@ -16,7 +16,7 @@ then-execute:
   - 'tellraw %PLAYER% {"text":"You have been teleported to the KoTH arena at %LOCATION%!"}'
 cost: 0.0
 bounds:
-  low: 40
+  low: -64
   high: 120
 check-radius:
   x-z: 2
