@@ -61,6 +61,24 @@ warmup:
   time: 0
   cancel-on-move: true
   count-down: true
+  # Customize the title messages and sounds used during the warmup countdown.
+  # Hex colors like {#00FFC8} or standard & colors can be used. Use \n for line breaks.
+  # title-countdown: '&6&lTeleporting...'
+  # subtitle-countdown: '&eIn &f%time%&e seconds...'
+  # sound-countdown: 'BLOCK_NOTE_BLOCK_PLING'
+  # sound-countdown-pitch-increase: true
+  # Customize success title and sounds (played upon landing).
+  # title-success: '&a&lTeleported!'
+  # subtitle-success: '&7Safe landing location found'
+  # sounds-success:
+  #   - 'ENTITY_ENDERMAN_TELEPORT:1.0:1.0'
+  #   - 'ENTITY_PLAYER_LEVELUP:0.8:1.3'
+  # Customize cancellation title and sounds (played if the player moves and cancels).
+  # title-cancel: '&c&lCancelled'
+  # subtitle-cancel: '&7RTP cancelled because you moved!'
+  # sounds-cancel:
+  #   - 'BLOCK_FIRE_EXTINGUISH:1.0:1.0'
+  #   - 'ENTITY_ITEM_BREAK:0.8:0.8'
 
 # Executes commands as console after a player is rtp'd.
 # Placeholders - These can be used only in rtpSettings `then-execute` list items. Typing a placeholder wrong will

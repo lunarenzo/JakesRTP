@@ -72,6 +72,16 @@ public class RtpProfile {
     public final LocCheckProfiles     checkProfile;
     public final String[]             commandsToRun;
     public final double               cost; // Will be 0 if we can't use economy
+    public final String               warmupTitleCountdown;
+    public final String               warmupSubtitleCountdown;
+    public final String               warmupSoundCountdown;
+    public final boolean              warmupSoundCountdownPitchIncrease;
+    public final String               warmupTitleSuccess;
+    public final String               warmupSubtitleSuccess;
+    public final List<String>         warmupSoundsSuccess;
+    public final String               warmupTitleCancel;
+    public final String               warmupSubtitleCancel;
+    public final List<String>         warmupSoundsCancel;
     /* except these */
     public final boolean              warmupEnabled; // Just for convenience (it is mostly redundant)
     public final boolean              canUseLocQueue;
@@ -155,6 +165,40 @@ public class RtpProfile {
         warmupEnabled = warmup > 0;
         warmupCancelOnMove = config.getBoolean("warmup.cancel-on-move", defaults.warmupCancelOnMove);
         warmupCountDown = config.getBoolean("warmup.count-down", defaults.warmupCountDown);
+
+        warmupTitleCountdown = formatColor(config.getString("warmup.title-countdown", defaults.warmupTitleCountdown != null ? defaults.warmupTitleCountdown : "§6§lTeleporting..."));
+        warmupSubtitleCountdown = formatColor(config.getString("warmup.subtitle-countdown", defaults.warmupSubtitleCountdown != null ? defaults.warmupSubtitleCountdown : "§eIn §f%time%§e seconds..."));
+        warmupSoundCountdown = config.getString("warmup.sound-countdown", defaults.warmupSoundCountdown != null ? defaults.warmupSoundCountdown : "BLOCK_NOTE_BLOCK_PLING");
+        warmupSoundCountdownPitchIncrease = config.getBoolean("warmup.sound-countdown-pitch-increase", defaults.warmupSoundCountdownPitchIncrease);
+
+        warmupTitleSuccess = formatColor(config.getString("warmup.title-success", defaults.warmupTitleSuccess != null ? defaults.warmupTitleSuccess : "§a§lTeleported!"));
+        warmupSubtitleSuccess = formatColor(config.getString("warmup.subtitle-success", defaults.warmupSubtitleSuccess != null ? defaults.warmupSubtitleSuccess : "§7Safe landing location found"));
+        List<String> listSuccess = config.getStringList("warmup.sounds-success");
+        if (listSuccess.isEmpty()) {
+            if (defaults.warmupSoundsSuccess != null && !defaults.warmupSoundsSuccess.isEmpty()) {
+                listSuccess = defaults.warmupSoundsSuccess;
+            } else {
+                listSuccess = new ArrayList<>();
+                listSuccess.add("ENTITY_ENDERMAN_TELEPORT:1.0:1.0");
+                listSuccess.add("ENTITY_PLAYER_LEVELUP:0.8:1.3");
+            }
+        }
+        warmupSoundsSuccess = Collections.unmodifiableList(listSuccess);
+
+        warmupTitleCancel = formatColor(config.getString("warmup.title-cancel", defaults.warmupTitleCancel != null ? defaults.warmupTitleCancel : "§c§lCancelled"));
+        warmupSubtitleCancel = formatColor(config.getString("warmup.subtitle-cancel", defaults.warmupSubtitleCancel != null ? defaults.warmupSubtitleCancel : "§7RTP cancelled because you moved!"));
+        List<String> listCancel = config.getStringList("warmup.sounds-cancel");
+        if (listCancel.isEmpty()) {
+            if (defaults.warmupSoundsCancel != null && !defaults.warmupSoundsCancel.isEmpty()) {
+                listCancel = defaults.warmupSoundsCancel;
+            } else {
+                listCancel = new ArrayList<>();
+                listCancel.add("BLOCK_FIRE_EXTINGUISH:1.0:1.0");
+                listCancel.add("ENTITY_ITEM_BREAK:0.8:0.8");
+            }
+        }
+        warmupSoundsCancel = Collections.unmodifiableList(listCancel);
+
         for (String s : infoStringsWarmup(false)) infoLog(nameInLog + s);
 
         // Cost
@@ -242,6 +286,16 @@ public class RtpProfile {
         canUseLocQueue = distribution != null &&
                          distribution.center != DistributionSettings.CenterTypes.PLAYER_LOCATION &&
                          cacheLocationCount > 0;
+        warmupTitleCountdown = "§6§lTeleporting...";
+        warmupSubtitleCountdown = "§eIn §f%time%§e seconds...";
+        warmupSoundCountdown = "BLOCK_NOTE_BLOCK_PLING";
+        warmupSoundCountdownPitchIncrease = true;
+        warmupTitleSuccess = "§a§lTeleported!";
+        warmupSubtitleSuccess = "§7Safe landing location found";
+        warmupSoundsSuccess = List.of("ENTITY_ENDERMAN_TELEPORT:1.0:1.0", "ENTITY_PLAYER_LEVELUP:0.8:1.3");
+        warmupTitleCancel = "§c§lCancelled";
+        warmupSubtitleCancel = "§7RTP cancelled because you moved!";
+        warmupSoundsCancel = List.of("BLOCK_FIRE_EXTINGUISH:1.0:1.0", "ENTITY_ITEM_BREAK:0.8:0.8");
     }
 
     public List<String> infoStringAll(boolean mcFormat, boolean full) {
@@ -385,6 +439,11 @@ public class RtpProfile {
         return canUseLocQueue
             ? DOU_01_SET.format(mcFormat, "Location caching", "Enabled", "Num", locationQueue.size() + "/" + cacheLocationCount)
             : LVL_01_SET.format(mcFormat, "Location caching", "Disabled");
+    }
+
+    private static String formatColor(String s) {
+        if (s == null) return null;
+        return GeneralUtil.replaceNewColors(GeneralUtil.replaceLegacyColors(GeneralUtil.replaceWrittenLineBreaks(s)));
     }
     //</editor-fold>
 }

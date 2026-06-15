@@ -99,8 +99,14 @@ public class CmdRtp implements TabExecutor {
             private void countDown() {
                 int timeLeft = rtpProfile.warmup - timeDifInSeconds();
                 player.sendMessage(Messages.WARMUP_TELEPORTING_IN_X.format(timeLeft));
-                player.sendTitle("§6§lTeleporting...", "§eIn §f" + timeLeft + "§e seconds...", 0, 25, 5);
-                player.playSound(player.getLocation(), org.bukkit.Sound.BLOCK_NOTE_BLOCK_PLING, 0.6f, 0.8f + (float) (rtpProfile.warmup - timeLeft) * 0.15f);
+                String title = rtpProfile.warmupTitleCountdown;
+                String subtitle = rtpProfile.warmupSubtitleCountdown == null ? "" : rtpProfile.warmupSubtitleCountdown.replace("%time%", String.valueOf(timeLeft));
+                player.sendTitle(title, subtitle, 0, 20, 5);
+                float pitch = 1.0f;
+                if (rtpProfile.warmupSoundCountdownPitchIncrease) {
+                    pitch = 0.8f + (float) (rtpProfile.warmup - timeLeft) * 0.15f;
+                }
+                playSound(player, rtpProfile.warmupSoundCountdown, 0.6f, pitch);
             }
 
             private void teleport() {
@@ -123,9 +129,10 @@ public class CmdRtp implements TabExecutor {
                     else rtpAction.teleportFullyAsync(player); // Use fully async to avoid main thread chunk loading
                     
                     // Show success title & play sounds
-                    player.sendTitle("§a§lTeleported!", "§7Safe landing location found", 5, 45, 15);
-                    player.playSound(player.getLocation(), org.bukkit.Sound.ENTITY_ENDERMAN_TELEPORT, 1.0f, 1.0f);
-                    player.playSound(player.getLocation(), org.bukkit.Sound.ENTITY_PLAYER_LEVELUP, 0.8f, 1.3f);
+                    player.sendTitle(rtpProfile.warmupTitleSuccess, rtpProfile.warmupSubtitleSuccess, 5, 45, 15);
+                    for (String soundStr : rtpProfile.warmupSoundsSuccess) {
+                        playSound(player, soundStr, 1.0f, 1.0f);
+                    }
 
                     // Log in the cooldown list
                     rtpProfile.coolDown.log(player.getName(), System.currentTimeMillis());
@@ -148,9 +155,10 @@ public class CmdRtp implements TabExecutor {
 
             private void cancel() {
                 player.sendMessage(Messages.WARMUP_CANCEL_BECAUSE_MOVE.format());
-                player.sendTitle("§c§lCancelled", "§7RTP cancelled because you moved!", 5, 40, 15);
-                player.playSound(player.getLocation(), org.bukkit.Sound.BLOCK_FIRE_EXTINGUISH, 1.0f, 1.0f);
-                player.playSound(player.getLocation(), org.bukkit.Sound.ENTITY_ITEM_BREAK, 0.8f, 0.8f);
+                player.sendTitle(rtpProfile.warmupTitleCancel, rtpProfile.warmupSubtitleCancel, 5, 40, 15);
+                for (String soundStr : rtpProfile.warmupSoundsCancel) {
+                    playSound(player, soundStr, 1.0f, 1.0f);
+                }
                 cancelTask();
             }
 
@@ -180,5 +188,31 @@ public class CmdRtp implements TabExecutor {
             if (name.contains(args[0]))
                 validSearches.add(name);
         return validSearches;
+    }
+
+    private void playSound(Player player, String soundStr, float defaultVolume, float defaultPitch) {
+        if (soundStr == null || soundStr.isEmpty()) return;
+        String[] parts = soundStr.split(":");
+        String name = parts[0].trim();
+        float volume = defaultVolume;
+        float pitch = defaultPitch;
+        if (parts.length > 1) {
+            try {
+                volume = Float.parseFloat(parts[1].trim());
+            } catch (NumberFormatException ignored) {}
+        }
+        if (parts.length > 2) {
+            try {
+                pitch = Float.parseFloat(parts[2].trim());
+            } catch (NumberFormatException ignored) {}
+        }
+        try {
+            org.bukkit.Sound sound = org.bukkit.Sound.valueOf(name.toUpperCase());
+            player.playSound(player.getLocation(), sound, volume, pitch);
+        } catch (IllegalArgumentException e) {
+            try {
+                player.playSound(player.getLocation(), name.toLowerCase(), volume, pitch);
+            } catch (Exception ignored) {}
+        }
     }
 }
