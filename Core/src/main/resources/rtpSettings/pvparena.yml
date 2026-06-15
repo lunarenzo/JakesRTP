@@ -12,6 +12,19 @@ warmup:
   time: 5
   cancel-on-move: true
   count-down: true
+  title-countdown: '&6&lKoTH Arena'
+  subtitle-countdown: '&eTeleporting in &f%time%&e...'
+  sound-countdown: 'BLOCK_NOTE_BLOCK_PLING'
+  sound-countdown-pitch-increase: true
+  title-success: '&a&lFIGHT!'
+  subtitle-success: '&7Prepare for battle!'
+  sounds-success:
+    - 'ENTITY_ENDERMAN_TELEPORT:1.0:1.0'
+    - 'ENTITY_WITHER_SPAWN:0.4:1.5'
+  title-cancel: '&c&lCancelled'
+  subtitle-cancel: '&7You moved! Teleportation cancelled.'
+  sounds-cancel:
+    - 'BLOCK_FIRE_EXTINGUISH:1.0:1.0'
 then-execute:
   - 'tellraw %PLAYER% {"text":"You have been teleported to the KoTH arena at %LOCATION%!"}'
 cost: 0.0
