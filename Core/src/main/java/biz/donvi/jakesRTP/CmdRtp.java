@@ -29,7 +29,7 @@ public class CmdRtp implements TabExecutor {
         try {
             if ((args.length == 0 || args.length == 1) && sender instanceof Player) {
                 Player player = (Player) sender;
-                if (args.length == 1 && !sender.hasPermission("jakesrtp.usebyname"))
+                if (args.length == 1 && !sender.hasPermission("jakesrtp.usebyname") && !sender.hasPermission("jakesrtp.use." + args[0].toLowerCase()))
                     return false;
                 RtpProfile relSettings = args.length == 0
                     ? randomTeleporter.getRtpSettingsByWorldForPlayer(player)
