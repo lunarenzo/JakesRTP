@@ -1,0 +1,11 @@
+shape: circle
+center:
+  option: c
+  c-custom:
+    x: 0
+    z: 0
+radius:
+  max: 85
+  min: 0
+gaussian-distribution:
+  enabled: false

@@ -113,10 +113,14 @@ public final class JakesRtpPlugin extends JavaPlugin {
             toRtpSettings = Paths.get(this.getDataFolder().getPath(), "rtpSettings");
             if (!Files.exists(toRtpSettings))
                 Files.createDirectory(toRtpSettings);
-            if (GeneralUtil.isDirEmpty(toRtpSettings))
+            if (GeneralUtil.isDirEmpty(toRtpSettings)) {
                 Files.copy(
                     getClassLoader().getResourceAsStream("rtpSettings/default-settings.yml"),
                     Paths.get(getDataFolder().getPath(), "rtpSettings", "default-settings.yml"));
+                Files.copy(
+                    getClassLoader().getResourceAsStream("rtpSettings/koth.yml"),
+                    Paths.get(getDataFolder().getPath(), "rtpSettings", "koth.yml"));
+            }
         } catch (IOException e) {
             logger.log(Level.WARNING, "Could not copy default rtpSetting.");
         }
@@ -131,6 +135,9 @@ public final class JakesRtpPlugin extends JavaPlugin {
                 Files.copy(
                     getClassLoader().getResourceAsStream("distributions/default-symmetric.yml"),
                     Paths.get(getDataFolder().getPath(), "distributions", "default-symmetric.yml"));
+                Files.copy(
+                    getClassLoader().getResourceAsStream("distributions/koth.yml"),
+                    Paths.get(getDataFolder().getPath(), "distributions", "koth.yml"));
             }
         } catch (IOException e) {
             logger.log(Level.WARNING, "Could not copy default rtpSetting.");

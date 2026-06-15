@@ -1,0 +1,29 @@
+enabled: true
+command-enabled: true
+require-explicit-permission: false
+priority: 10
+landing-world: 'koth'
+call-from-worlds:
+  - '.*'
+distribution: 'koth'
+location-checking-profile: b # Top down since it's an end world
+cooldown: 10
+warmup:
+  time: 0
+  cancel-on-move: true
+  count-down: true
+then-execute:
+  - 'tellraw %PLAYER% {"text":"You have been teleported to the KoTH arena at %LOCATION%!"}'
+cost: 0.0
+bounds:
+  low: 40
+  high: 120
+check-radius:
+  x-z: 2
+  vert: 2
+max-attempts:
+  value: 20
+preparations:
+  cache-locations: 5
+prefer-sync-tp:
+  command: false
