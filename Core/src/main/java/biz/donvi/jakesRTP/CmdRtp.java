@@ -128,11 +128,15 @@ public class CmdRtp implements TabExecutor {
                          rtpAction.teleportSync(player);
                     else rtpAction.teleportFullyAsync(player); // Use fully async to avoid main thread chunk loading
                     
-                    // Show success title & play sounds
-                    player.sendTitle(rtpProfile.warmupTitleSuccess, rtpProfile.warmupSubtitleSuccess, 5, 45, 15);
-                    for (String soundStr : rtpProfile.warmupSoundsSuccess) {
-                        playSound(player, soundStr, 1.0f, 1.0f);
-                    }
+                    // Show success title & play sounds (delayed slightly to prevent client cutoff on teleport)
+                    scheduler.runTaskLater(plugin, () -> {
+                        if (player.isOnline()) {
+                            player.sendTitle(rtpProfile.warmupTitleSuccess, rtpProfile.warmupSubtitleSuccess, 5, 45, 15);
+                            for (String soundStr : rtpProfile.warmupSoundsSuccess) {
+                                playSound(player, soundStr, 1.0f, 1.0f);
+                            }
+                        }
+                    }, 5L);
 
                     // Log in the cooldown list
                     rtpProfile.coolDown.log(player.getName(), System.currentTimeMillis());

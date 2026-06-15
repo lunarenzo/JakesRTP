@@ -25,3 +25,30 @@ language: 'en'
 #   thank you so much. ♥
 
 need-to-wait-for-cooldown: 'Whoops! You still have to wait {0}'
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# ~ LIST OF ALL CUSTOMIZABLE DEFAULT TRANSLATIONS ~
+# You can uncomment and customize any of the following messages:
+#
+# not-permitted-generic: 'Could not RTP for reason: {0}'
+# not-permitted-major-error: 'Error. Could not RTP for reason: {0} \nPlease check console for more info on why teleportation failed.'
+# not-enabled-in-this-world: 'RTP is not enabled in this world. {0}'
+# no-settings-found-with-name: 'No RTP settings found with name {0}'
+# no-settings-found-with-name-for-player: 'No RTP settings found with name {0}'
+# too-many-failed-attempts: 'Too many failed attempts.'
+# player-not-found: 'Could not find player {0}'
+# world-not-found: 'Could not find world {0}'
+# rtp-settings-no-contain-world: 'Input mismatch: RtpSettings "{0}" does not contain the world "{1}" as one of its enabled worlds.'
+# rtp-settings-must-use-world: 'Input mismatch: RtpSettings "{0}" can only teleport people in world "{1}"'
+# teleporting-in-x-seconds: 'Teleporting in {0} seconds...'
+# moved-during-warmup: 'Movement detected, RTP Canceled.'
+# rtp-called-while-in-warmup: 'You are already waiting on an RTP warmup!'
+# not-enough-money: 'You do not have enough money for this. Cost: {0}. Balance: {1}.'
+# no-longer-enough-money: 'You no longer have the required funds to do this.'
+# you-were-charged-x: 'You were charged {0} and now have {1}'
+# economy-error: 'An economy error occurred: {0}'
+# readable-time: '{0}{1}{2}{3}'
+# readable-time-word-days:    '{0} days, '
+# readable-time-word-hours:   '{0} hours, '
+# readable-time-word-minutes: '{0} minutes, '
+# readable-time-word-seconds: '{0} seconds.'
