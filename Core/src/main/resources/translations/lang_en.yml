@@ -76,3 +76,5 @@ readable-time-word-minutes: '{0} minutes, '
 readable-time-word-seconds: '{0} seconds.'
 # For general command usage / error help
 rtp-usage: '&cUsage: /rtp [settingsName]'
+# For when a player successfully teleports
+teleported-to: '&aYou have been teleported to {0}'

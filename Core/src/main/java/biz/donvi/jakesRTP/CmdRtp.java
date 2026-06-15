@@ -157,6 +157,8 @@ public class CmdRtp implements TabExecutor {
                                     for (String soundStr : rtpProfile.warmupSoundsSuccess) {
                                         playSound(player, soundStr, 1.0f, 1.0f);
                                     }
+                                    String locationStr = currentLoc.getWorld().getName() + " (" + currentLoc.getBlockX() + ", " + currentLoc.getBlockY() + ", " + currentLoc.getBlockZ() + ")";
+                                    player.sendMessage(Messages.TELEPORTED_TO.format(locationStr));
                                     cancel();
                                 }
                             }
