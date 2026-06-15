@@ -118,8 +118,8 @@ public final class JakesRtpPlugin extends JavaPlugin {
                     getClassLoader().getResourceAsStream("rtpSettings/default-settings.yml"),
                     Paths.get(getDataFolder().getPath(), "rtpSettings", "default-settings.yml"));
                 Files.copy(
-                    getClassLoader().getResourceAsStream("rtpSettings/koth.yml"),
-                    Paths.get(getDataFolder().getPath(), "rtpSettings", "koth.yml"));
+                    getClassLoader().getResourceAsStream("rtpSettings/pvparena.yml"),
+                    Paths.get(getDataFolder().getPath(), "rtpSettings", "pvparena.yml"));
             }
         } catch (IOException e) {
             logger.log(Level.WARNING, "Could not copy default rtpSetting.");
@@ -136,8 +136,8 @@ public final class JakesRtpPlugin extends JavaPlugin {
                     getClassLoader().getResourceAsStream("distributions/default-symmetric.yml"),
                     Paths.get(getDataFolder().getPath(), "distributions", "default-symmetric.yml"));
                 Files.copy(
-                    getClassLoader().getResourceAsStream("distributions/koth.yml"),
-                    Paths.get(getDataFolder().getPath(), "distributions", "koth.yml"));
+                    getClassLoader().getResourceAsStream("distributions/pvparena.yml"),
+                    Paths.get(getDataFolder().getPath(), "distributions", "pvparena.yml"));
             }
         } catch (IOException e) {
             logger.log(Level.WARNING, "Could not copy default rtpSetting.");

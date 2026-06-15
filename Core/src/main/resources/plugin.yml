@@ -46,7 +46,7 @@ permissions:
     default: true
   jakesrtp.usebyname:
     description: 'Allows players to give a rtpSettings name after rtp as such: "/rtp <settingsName>"'
-    default: false
+    default: op
   jakesrtp.rtpondeath:
     description: 'If rtp-on-death is enabled, players with this node will be respawn in a random location'
     default: false

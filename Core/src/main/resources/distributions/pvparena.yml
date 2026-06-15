@@ -2,10 +2,10 @@ shape: circle
 center:
   option: c
   c-custom:
-    x: 0
-    z: 0
+    x: 8
+    z: 8
 radius:
-  max: 85
-  min: 0
+  max: 14
+  min: 14
 gaussian-distribution:
   enabled: false

@@ -2,14 +2,14 @@ enabled: true
 command-enabled: true
 require-explicit-permission: false
 priority: 10
-landing-world: 'koth'
+landing-world: 'pvparena'
 call-from-worlds:
   - '.*'
-distribution: 'koth'
+distribution: 'pvparena'
 location-checking-profile: b # Top down since it's an end world
 cooldown: 10
 warmup:
-  time: 0
+  time: 5
   cancel-on-move: true
   count-down: true
 then-execute:
