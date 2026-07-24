@@ -135,57 +135,29 @@ public class CmdRtp implements TabExecutor {
                     );
                     rtpAction.onComplete(() -> {
                         if (JakesRtpPlugin.debugMode) {
-                            plugin.getLogger().info("[JakesRTP-Debug] Teleport completed. Starting chunk-load / movement detection.");
-                        }
-                        if (!player.isOnline()) {
-                            if (JakesRtpPlugin.debugMode) {
-                                plugin.getLogger().info("[JakesRTP-Debug] Player is offline, aborting.");
-                            }
-                            return;
-                        }
-                        final Location targetLoc = player.getLocation().clone();
-                        if (JakesRtpPlugin.debugMode) {
-                            plugin.getLogger().info("[JakesRTP-Debug] Target Location: " + targetLoc);
+                            plugin.getLogger().info("[JakesRTP-Debug] Teleport completed. Scheduling success title/sounds in 15 ticks.");
                         }
                         new BukkitRunnable() {
-                            private int ticksElapsed = 0;
                             @Override
                             public void run() {
-                                ticksElapsed += 2;
                                 if (!player.isOnline()) {
                                     if (JakesRtpPlugin.debugMode) {
-                                        plugin.getLogger().info("[JakesRTP-Debug] Player went offline during detection, cancelling.");
+                                        plugin.getLogger().info("[JakesRTP-Debug] Player is offline, aborting success title.");
                                     }
-                                    cancel();
                                     return;
                                 }
-                                Location currentLoc = player.getLocation();
-                                double dx = currentLoc.getX() - targetLoc.getX();
-                                double dz = currentLoc.getZ() - targetLoc.getZ();
-                                float dyaw = currentLoc.getYaw() - targetLoc.getYaw();
-                                float dpitch = currentLoc.getPitch() - targetLoc.getPitch();
-                                // Only check movement after a 10-tick (500ms) delay to allow the loading screen to clear.
-                                // Ignore vertical movement (falling/gravity) and only detect horizontal movement or rotation.
-                                boolean moved = ticksElapsed >= 10 && ((dx * dx + dz * dz > 0.01) || (Math.abs(dyaw) > 0.1f || Math.abs(dpitch) > 0.1f));
-                                
-                                if (JakesRtpPlugin.debugMode && ticksElapsed % 10 == 0) {
-                                    plugin.getLogger().info("[JakesRTP-Debug] Tick " + ticksElapsed + " | dx=" + dx + ", dz=" + dz + " | dyaw=" + dyaw + ", dpitch=" + dpitch + " | moved=" + moved);
+                                if (JakesRtpPlugin.debugMode) {
+                                    plugin.getLogger().info("[JakesRTP-Debug] Sending success title and playing sounds.");
                                 }
-                                
-                                if (moved || ticksElapsed >= 100) {
-                                    if (JakesRtpPlugin.debugMode) {
-                                        plugin.getLogger().info("[JakesRTP-Debug] Triggering success. moved=" + moved + ", ticksElapsed=" + ticksElapsed + ". Sending title: '" + rtpProfile.warmupTitleSuccess + "' / '" + rtpProfile.warmupSubtitleSuccess + "'");
-                                    }
-                                    player.sendTitle(rtpProfile.warmupTitleSuccess, rtpProfile.warmupSubtitleSuccess, 5, 45, 15);
-                                    for (String soundStr : rtpProfile.warmupSoundsSuccess) {
-                                        playSound(player, soundStr, 1.0f, 1.0f);
-                                    }
-                                    String locationStr = currentLoc.getWorld().getName() + " (" + currentLoc.getBlockX() + ", " + currentLoc.getBlockY() + ", " + currentLoc.getBlockZ() + ")";
-                                    player.sendMessage(Messages.TELEPORTED_TO.format(locationStr));
-                                    cancel();
+                                player.sendTitle(rtpProfile.warmupTitleSuccess, rtpProfile.warmupSubtitleSuccess, 5, 45, 15);
+                                for (String soundStr : rtpProfile.warmupSoundsSuccess) {
+                                    playSound(player, soundStr, 1.0f, 1.0f);
                                 }
+                                Location loc = player.getLocation();
+                                String locationStr = loc.getWorld().getName() + " (" + loc.getBlockX() + ", " + loc.getBlockY() + ", " + loc.getBlockZ() + ")";
+                                player.sendMessage(Messages.TELEPORTED_TO.format(locationStr));
                             }
-                        }.runTaskTimer(plugin, 0L, 2L);
+                        }.runTaskLater(plugin, 15L);
                     });
 
                     if (rtpProfile.preferSyncTpOnCommand)
