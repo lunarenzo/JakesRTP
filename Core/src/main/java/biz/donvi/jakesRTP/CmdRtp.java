@@ -147,12 +147,13 @@ public class CmdRtp implements TabExecutor {
                                 }
                                 Location currentLoc = player.getLocation();
                                 double dx = currentLoc.getX() - targetLoc.getX();
-                                double dy = currentLoc.getY() - targetLoc.getY();
                                 double dz = currentLoc.getZ() - targetLoc.getZ();
                                 float dyaw = currentLoc.getYaw() - targetLoc.getYaw();
                                 float dpitch = currentLoc.getPitch() - targetLoc.getPitch();
-                                boolean moved = (dx * dx + dy * dy + dz * dz > 1e-6) || (dyaw * dyaw + dpitch * dpitch > 1e-6);
-                                if (moved || ticksElapsed >= 15) {
+                                // Only check movement after a 10-tick (500ms) delay to allow the loading screen to clear.
+                                // Ignore vertical movement (falling/gravity) and only detect horizontal movement or rotation.
+                                boolean moved = ticksElapsed >= 10 && ((dx * dx + dz * dz > 0.01) || (Math.abs(dyaw) > 0.1f || Math.abs(dpitch) > 0.1f));
+                                if (moved || ticksElapsed >= 30) {
                                     player.sendTitle(rtpProfile.warmupTitleSuccess, rtpProfile.warmupSubtitleSuccess, 5, 45, 15);
                                     for (String soundStr : rtpProfile.warmupSoundsSuccess) {
                                         playSound(player, soundStr, 1.0f, 1.0f);
