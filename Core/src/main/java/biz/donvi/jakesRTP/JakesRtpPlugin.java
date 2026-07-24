@@ -32,6 +32,7 @@ public final class JakesRtpPlugin extends JavaPlugin {
     static LocationCacheFiller   locFinderRunnable;
     static WorldBorderPluginHook worldBorderPluginHook;
     static ClaimsManager         claimsManager = null;
+    public static boolean        debugMode = false;
 
     private static       Logger logger;
     private static final String LANG_SETTINGS_FILE_NAME = "language-settings.yml";
@@ -159,6 +160,7 @@ public final class JakesRtpPlugin extends JavaPlugin {
     @SuppressWarnings("ConstantConditions")
     public void loadRandomTeleporter() {
         this.reloadConfig();
+        debugMode = this.getConfig().getBoolean("debug", false);
         try {
             theRandomTeleporter =
                 new RandomTeleporter(

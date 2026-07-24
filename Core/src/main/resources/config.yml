@@ -78,3 +78,6 @@ logging:
   rtp-on-command: true
   rtp-on-force-command: true
   rtp-for-queue: false
+
+# Enable verbose debug logs to console for troubleshooting teleportation, warmup, and configuration issues.
+debug: false

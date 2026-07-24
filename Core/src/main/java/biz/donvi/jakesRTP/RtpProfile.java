@@ -199,10 +199,12 @@ public class RtpProfile {
         }
         warmupSoundsCancel = Collections.unmodifiableList(listCancel);
 
-        plugin.getLogger().info("[JakesRTP-ProfileDebug] Profile: " + name + 
-            " | title-countdown: '" + warmupTitleCountdown + 
-            "' | title-success: '" + warmupTitleSuccess + 
-            "' | subtitle-success: '" + warmupSubtitleSuccess + "'");
+        if (JakesRtpPlugin.debugMode) {
+            plugin.getLogger().info("[JakesRTP-ProfileDebug] Profile: " + name + 
+                " | title-countdown: '" + warmupTitleCountdown + 
+                "' | title-success: '" + warmupTitleSuccess + 
+                "' | subtitle-success: '" + warmupSubtitleSuccess + "'");
+        }
         for (String s : infoStringsWarmup(false)) infoLog(nameInLog + s);
 
         // Cost
