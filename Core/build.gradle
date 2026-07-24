@@ -10,7 +10,7 @@ repositories {
         content { includeGroupByRegex 'com\\.github\\..*' }
     }
     maven {
-        url 'https://papermc.io/repo/repository/maven-public/'
+        url 'https://repo.papermc.io/repository/maven-public/'
         content { excludeGroupByRegex 'com\\.github\\..*' }
     }
     maven { url 'https://repo.codemc.io/repository/maven-public/' }
