@@ -134,14 +134,20 @@ public class CmdRtp implements TabExecutor {
                         randomTeleporter.logRtpOnCommand, "Rtp-from-command triggered!"
                     );
                     rtpAction.onComplete(() -> {
-                        if (!player.isOnline()) return;
+                        plugin.getLogger().info("[JakesRTP-Debug] Teleport completed. Starting chunk-load / movement detection.");
+                        if (!player.isOnline()) {
+                            plugin.getLogger().info("[JakesRTP-Debug] Player is offline, aborting.");
+                            return;
+                        }
                         final Location targetLoc = player.getLocation().clone();
+                        plugin.getLogger().info("[JakesRTP-Debug] Target Location: " + targetLoc);
                         new BukkitRunnable() {
                             private int ticksElapsed = 0;
                             @Override
                             public void run() {
                                 ticksElapsed += 2;
                                 if (!player.isOnline()) {
+                                    plugin.getLogger().info("[JakesRTP-Debug] Player went offline during detection, cancelling.");
                                     cancel();
                                     return;
                                 }
@@ -153,7 +159,13 @@ public class CmdRtp implements TabExecutor {
                                 // Only check movement after a 10-tick (500ms) delay to allow the loading screen to clear.
                                 // Ignore vertical movement (falling/gravity) and only detect horizontal movement or rotation.
                                 boolean moved = ticksElapsed >= 10 && ((dx * dx + dz * dz > 0.01) || (Math.abs(dyaw) > 0.1f || Math.abs(dpitch) > 0.1f));
+                                
+                                if (ticksElapsed % 10 == 0) {
+                                    plugin.getLogger().info("[JakesRTP-Debug] Tick " + ticksElapsed + " | dx=" + dx + ", dz=" + dz + " | dyaw=" + dyaw + ", dpitch=" + dpitch + " | moved=" + moved);
+                                }
+                                
                                 if (moved || ticksElapsed >= 30) {
+                                    plugin.getLogger().info("[JakesRTP-Debug] Triggering success. moved=" + moved + ", ticksElapsed=" + ticksElapsed + ". Sending title: '" + rtpProfile.warmupTitleSuccess + "' / '" + rtpProfile.warmupSubtitleSuccess + "'");
                                     player.sendTitle(rtpProfile.warmupTitleSuccess, rtpProfile.warmupSubtitleSuccess, 5, 45, 15);
                                     for (String soundStr : rtpProfile.warmupSoundsSuccess) {
                                         playSound(player, soundStr, 1.0f, 1.0f);
