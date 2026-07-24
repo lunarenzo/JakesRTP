@@ -152,7 +152,7 @@ public class CmdRtp implements TabExecutor {
                                 float dyaw = currentLoc.getYaw() - targetLoc.getYaw();
                                 float dpitch = currentLoc.getPitch() - targetLoc.getPitch();
                                 boolean moved = (dx * dx + dy * dy + dz * dz > 1e-6) || (dyaw * dyaw + dpitch * dpitch > 1e-6);
-                                if (moved || ticksElapsed >= 40) {
+                                if (moved || ticksElapsed >= 15) {
                                     player.sendTitle(rtpProfile.warmupTitleSuccess, rtpProfile.warmupSubtitleSuccess, 5, 45, 15);
                                     for (String soundStr : rtpProfile.warmupSoundsSuccess) {
                                         playSound(player, soundStr, 1.0f, 1.0f);
