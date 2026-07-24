@@ -263,8 +263,8 @@ public class RandomTeleportAction {
         if (timed) timeEnd = System.currentTimeMillis();
         if (log)
             if (teleported) infoLog(
-                logMessage +
-                " Teleported player " + player.getName() +
+                logMessage + " [" + rtpProfile.name + "] " +
+                "Teleported player " + player.getName() +
                 " to " + locationAsString(landingLoc, 1, false) +
                 " taking " + (timed ? timeEnd - timeStart : "N/A") + " ms.");
             else infoLog(

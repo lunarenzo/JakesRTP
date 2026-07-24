@@ -160,7 +160,7 @@ public final class JakesRtpPlugin extends JavaPlugin {
     @SuppressWarnings("ConstantConditions")
     public void loadRandomTeleporter() {
         this.reloadConfig();
-        debugMode = this.getConfig().getBoolean("debug", false);
+        debugMode = this.getConfig().getBoolean("debug", false) || this.getConfig().getBoolean("logging.debug", false);
         try {
             theRandomTeleporter =
                 new RandomTeleporter(
